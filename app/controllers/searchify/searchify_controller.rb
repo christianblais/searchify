@@ -1,5 +1,5 @@
 module Searchify
-  class SearchifyController < ActionController::Base
+  class SearchifyController < ::ApplicationController
 
     respond_to :js
 
@@ -14,16 +14,14 @@ module Searchify
       search_term     = params[:term]
       search_keyword  = extract_search_key(resource_class)
 
-      scopes = params.except("controller", "action", "format", "collection", "term", "page")
-
       collection = if resource_class.respond_to?(:search_strategy)
-        resource_class.search_strategy(search_term, scopes)
+        resource_class.search_strategy(search_term, current_scopes)
       else
         columns = DEFAULT_COLUMNS & resource_class.column_names
 
         scoped = resource_class.where( columns.map{ |c| "(#{c} #{search_keyword} :term)" }.join(' OR '), :term => "%#{search_term}%")
 
-        scopes.each do |key, value|
+        searchify_scopes.each do |key, value|
           scoped = scoped.send(key, value) if resource_class.respond_to?(key)
         end
 
