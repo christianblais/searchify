@@ -57,6 +57,14 @@ Searchify can also be used in a form. For example, let's say that a post belongs
 
 Searchify will include a `user_id` field in your form, which will be automatically populated.
 
+#### Scopes
+
+Searchify is scopes aware. Let's say you are here:
+
+`/posts?created_by=3`
+
+Assuming your `Post` model responds to the `created_by` method, it will be included in the search.
+
 #### Search stategies
 
 By default, Searchify does a case insensitive search on `name`, `title` and `abbreviation` fields of your models, if they exist. You can of course specify
