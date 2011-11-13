@@ -4,9 +4,9 @@ module Searchify
       options = args.extract_options!
 
       collection  = options[:collection] || args.shift || extract_collection
-      search_url  = options[:search_url] || extract_search_url(collection)
+      search_url  = options[:search_url] || extract_search_url(collection, searchify_scopes)
       select_url  = options[:select_url] || extract_select_url
-
+      
       text_field_tag(:searchify, nil, :class => :searchify, :data => {:'select-url' => select_url, :'search-url' => search_url})
     end
 
@@ -20,8 +20,8 @@ module Searchify
       end
     end
 
-    def extract_search_url(collection)
-      "/searchify/search/#{collection}.json"
+    def extract_search_url(collection, scopes)
+      "/searchify/search/#{collection}.json?" + scopes.map{ |k,v| "#{k}=#{v}" }.join('&')
     end
 
     def extract_select_url
