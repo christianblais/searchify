@@ -25,7 +25,7 @@ Add both jquery-ui and searchify to your `app/assets/javascripts/application.js`
 
 Usage
 -----
-#### Autocomplete search
+### Autocomplete search
 
 Searchify is intented to be used on a per model basis. You type, you choose, you are redirected to the chosen resource show page.
 Calling it on an index page, it infers the model to be searched with the controller name, or the `resource_class` helper, if it exists.
@@ -44,7 +44,7 @@ For example, to land on the edit page, you could write:
 
     <%= autocomplete :select_url => "/posts/(id)/edit" %>
 
-#### In place autocomplete
+### In place autocomplete
 
 Searchify can also be used in a form. For example, let's say that a post belongs to a user of your choice.:
 
@@ -57,7 +57,7 @@ Searchify can also be used in a form. For example, let's say that a post belongs
 
 Searchify will include a `user_id` field in your form, which will be automatically populated.
 
-#### Scopes
+### Scopes
 
 Searchify is scopes aware. Let's say you are here:
 
@@ -65,7 +65,16 @@ Searchify is scopes aware. Let's say you are here:
 
 Assuming your `Post` model responds to the `created_by` method, it will be included in the search.
 
-#### Search stategies
+### Configuration
+
+You can always override the defaults with an initializer. Options are as follow:
+
+    Searchify::Config.configure do |config|
+        config.scope_exclusion  = %w( controller action format collection term page )
+        config.columns          = %w( name title abbreviation )
+    end
+
+### Search stategies
 
 By default, Searchify does a case insensitive search on `name`, `title` and `abbreviation` fields of your models, if they exist. You can of course specify
 a custom search strategy by defining a class method named `search_strategy` in your model. It should returns an array of hash.
