@@ -7,8 +7,6 @@ module Searchify
 
     layout false
 
-    DEFAULT_COLUMNS = %w( name title abbreviation )
-
     def search
       resource_class  = params[:collection].classify.constantize
       search_term     = params[:term]
@@ -17,7 +15,7 @@ module Searchify
       collection = if resource_class.respond_to?(:search_strategy)
         resource_class.search_strategy(search_term, current_scopes)
       else
-        columns = DEFAULT_COLUMNS & resource_class.column_names
+        columns = Config.columns & resource_class.column_names
 
         scoped = resource_class.where( columns.map{ |c| "(#{c} #{search_keyword} :term)" }.join(' OR '), :term => "%#{search_term}%")
 
