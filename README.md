@@ -78,6 +78,7 @@ You can always override the defaults with an initializer. Options are as follow:
         config.column_names     = %w( name title abbreviation )
         config.scope_awareness  = true
         config.limit            = 30
+        config.search_key       = 'LIKE'
     end
 
 ### Search stategies

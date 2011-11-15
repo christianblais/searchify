@@ -18,7 +18,8 @@ module Searchify
           :@scope_exclusion => %w( controller action format collection term page ),
           :@column_names    => %w( name title abbreviation ),
           :@scope_awareness => true,
-          :@limit           => 30
+          :@limit           => 30,
+          :@search_key      => nil
         }
       end
 

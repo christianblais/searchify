@@ -34,11 +34,13 @@ module Searchify
     protected
 
     def extract_search_key(resource_class)
-      case resource_class.connection.adapter_name
-        when 'MySQL', 'Mysql2', 'SQLite'
-          'LIKE'
-        when 'PostgreSQL'
-          'ILIKE'
+      Searchify::Config.search_key || begin
+        case resource_class.connection.adapter_name
+          when 'PostgreSQL'
+            'ILIKE'
+          else
+            'LIKE'
+        end
       end
     end
   end
