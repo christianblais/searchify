@@ -19,7 +19,8 @@ module Searchify
           :@column_names    => %w( name title abbreviation ),
           :@scope_awareness => true,
           :@limit           => 30,
-          :@search_key      => nil
+          :@search_key      => nil,
+          :@label_method    => :name
         }
       end
 

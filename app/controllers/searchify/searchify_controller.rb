@@ -24,7 +24,7 @@ module Searchify
         end
 
         scoped.limit(Searchify::Config.limit).map do |resource|
-          {:label => resource.name, :id => resource.id}
+          {:label => resource.respond_to?(Searchify::Config.label_method) ? resource.send(Searchify::Config.label_method) : resource.to_s, :id => resource.id}
         end
       end
 

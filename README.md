@@ -79,6 +79,7 @@ You can always override the defaults with an initializer. Options are as follow:
         config.scope_awareness  = true
         config.limit            = 30
         config.search_key       = 'LIKE'
+        config.label_method     = :name
     end
 
 ### Search stategies
