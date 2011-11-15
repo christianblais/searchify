@@ -33,7 +33,7 @@ For example, consider the following line of code on your `/posts` page:
 
     <%= autocomplete %>
 
-This will triggers an AJAX call to /searchify/search/posts.json page and jQuery handles the response with its autocomplete widget.
+This will triggers an AJAX call to `/searchify/search/posts.json` page and jQuery will handle the response with its autocomplete widget.
 
 If you want to specify the collection, i.e. searching for `users` on the `posts` page, just write this:
 
@@ -46,7 +46,7 @@ For example, to land on the edit page, you could write:
 
 ### In place autocomplete
 
-Searchify can also be used in a form. For example, let's say that a post belongs to a user of your choice.:
+Searchify can also be used in a form. For example, let's say that a post belongs to a user of your choice
 
     <%= form_for(@post) do |f| %>
         <div class="field">
@@ -55,11 +55,11 @@ Searchify can also be used in a form. For example, let's say that a post belongs
         </div>
     <% end %>
 
-Searchify will include a `user_id` field in your form, which will be automatically populated.
+Searchify will include a `user_id` field in your form, which will be automatically populated with your search.
 
 ### Scopes
 
-Searchify is scopes aware. Let's say you are here:
+Searchify is by default scopes aware. Let's say you are here:
 
 `/posts?created_by=3`
 
