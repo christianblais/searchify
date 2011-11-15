@@ -10,7 +10,7 @@ module Searchify
 
     module InstanceMethods
       def searchify_scopes
-        params.except(*Config.scope_exclusion)
+        params.except(*Searchify::Config.scope_exclusion)
       end
     end
   end

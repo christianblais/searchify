@@ -65,13 +65,19 @@ Searchify is by default scopes aware. Let's say you are here:
 
 Assuming your `Post` model responds to the `created_by` method, it will be included in the search.
 
+You may also force your own scopes into an autocomplete field by adding the `scopes` options, as follow:
+
+    <%= autocomplete :scopes => {:created_by => 3} %>
+
 ### Configuration
 
 You can always override the defaults with an initializer. Options are as follow:
 
     Searchify::Config.configure do |config|
         config.scope_exclusion  = %w( controller action format collection term page )
-        config.columns          = %w( name title abbreviation )
+        config.column_names     = %w( name title abbreviation )
+        config.scope_awareness  = true
+        config.limit            = 30
     end
 
 ### Search stategies
