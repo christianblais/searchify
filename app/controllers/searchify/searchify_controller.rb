@@ -15,7 +15,7 @@ module Searchify
       collection = if resource_class.respond_to?(:search_strategy)
         resource_class.search_strategy(search_term, current_scopes)
       else
-        columns = Config.columns & resource_class.column_names
+        columns = Config.column_names & resource_class.column_names
 
         scoped = resource_class.where( columns.map{ |c| "(#{c} #{search_keyword} :term)" }.join(' OR '), :term => "%#{search_term}%")
 
@@ -23,7 +23,7 @@ module Searchify
           scoped = scoped.send(key, value) if resource_class.respond_to?(key)
         end
 
-        scoped.map do |resource|
+        scoped.limit(Config.limit).map do |resource|
           {:label => resource.name, :id => resource.id}
         end
       end

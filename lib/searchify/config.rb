@@ -16,7 +16,8 @@ module Searchify
       def init!
         @defaults = {
           :@scope_exclusion => %w( controller action format collection term page ),
-          :@columns         => %w( name title abbreviation )
+          :@column_names    => %w( name title abbreviation ),
+          :@limit           => 30
         }
       end
 
