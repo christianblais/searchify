@@ -49,7 +49,7 @@ If your redirect is more complex, you can always redefine the `select_url` optio
 
 ### In place autocomplete
 
-Searchify can also be used in a form. For example, let's say that a post belongs to a user of your choice
+Searchify can also be used in a form. For example, let's say that a post belongs to a user of your choice:
 
     <%= form_for(@post) do |f| %>
         <div class="field">
@@ -58,7 +58,7 @@ Searchify can also be used in a form. For example, let's say that a post belongs
         </div>
     <% end %>
 
-Searchify will include a `user_id` field in your form, which will be automatically populated with your search.
+Searchify will include a `user_id` field in your form, which will be automatically populated with your search. Searchify uses the `label_method` option to display the object.
 
 ### Scopes
 

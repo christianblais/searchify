@@ -4,13 +4,13 @@ module Searchify
       options = args.extract_options!
 
       # searchify options
-      collection  = options[:collection] || args.shift || extract_collection
-      search_url  = options[:search_url] || extract_search_url(collection, options.delete(:scopes) || {})
-      select_url  = options[:select_url] || extract_select_url(options.delete(:action))
+      collection  = options.delete(:collection) || args.shift || extract_collection
+      search_url  = options.delete(:search_url) || extract_search_url(collection, options.delete(:scopes) || {})
+      select_url  = options.delete(:select_url) || extract_select_url(options.delete(:action))
 
       # tag options
       options[:class] = [:searchify].push(options[:class]).flatten.compact
-      options[:data]  = {:'select-url' => select_url, :'search-url' => search_url}
+      options[:data]  = {:'select-url' => select_url, :'search-url' => search_url}.merge(options[:data])
 
       text_field_tag(:searchify, nil, options)
     end
@@ -57,16 +57,19 @@ class ActionView::Helpers::FormBuilder
     options = args.extract_options!
 
     # searchify options
-    model_name  = options[:model_name] || extract_model_name(field)
-    field_name  = options[:field_name] || extract_field_name(field)
-    collection  = options[:collection] || extract_collection(model_name)
-    search_url  = options[:search_url] || extract_search_url(collection, options.delete(:scopes) || {})
+    model_name  = options.delete(:model_name) || extract_model_name(field)
+    field_name  = options.delete(:field_name) || extract_field_name(field)
+    collection  = options.delete(:collection) || extract_collection(model_name)
+    search_url  = options.delete(:search_url) || extract_search_url(collection, options.delete(:scopes) || {})
 
     # field options
     options[:class] = [:searchify].push(options[:class]).flatten.compact
-    options[:data]  = {:'search-url' => search_url}
+    options[:data]  = {:'search-url' => search_url}.merge(options[:data])
 
-    hidden_field(field_name) + @template.text_field_tag(:searchify, nil, :class => :searchify, :data => {:'search-url' => search_url})
+    # value
+    label_method = options.delete(:label_method) || Searchify::Config.label_method
+
+    hidden_field(field_name) + @template.text_field_tag(:searchify, object.send(model_name).try(label_method), options)
   end
 
   protected
@@ -76,7 +79,7 @@ class ActionView::Helpers::FormBuilder
   end
 
   def extract_search_url(collection, scopes={})
-    "#{searchify_path}/search/#{collection}.json?" + scopes.map{ |k,v| "#{k}=#{v}" }.join('&')
+    "#{@template.searchify_path}/search/#{collection}.json?" + scopes.map{ |k,v| "#{k}=#{v}" }.join('&')
   end
 
   def extract_model_name(field)
