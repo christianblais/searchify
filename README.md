@@ -27,22 +27,25 @@ Usage
 -----
 ### Autocomplete search
 
-Searchify is intented to be used on a per model basis. You type, you choose, you are redirected to the chosen resource show page.
+Searchify is intended to be used on a per model basis. You type, you choose, you are redirected to the chosen resource show page.
 Calling it on an index page, it infers the model to be searched with the controller name, or the `resource_class` helper, if it exists.
 For example, consider the following line of code on your `/posts` page:
 
-    <%= autocomplete %>
+    <%= searchify %>
 
 This will triggers an AJAX call to `/searchify/search/posts.json` page and jQuery will handle the response with its autocomplete widget.
 
 If you want to specify the collection, i.e. searching for `users` on the `posts` page, just write this:
 
-    <%= autocomplete :users %>
+    <%= searchify :users %>
 
-If you don't want to be redirected to the chosen resource page, you can specify the `select_url` option with the special `(id)` value.
-For example, to land on the edit page, you could write:
+When a selection is made, you are redirected to the chosen resource show page. If you want to land on any other member action, the `action` option is for you.
 
-    <%= autocomplete :select_url => "/posts/(id)/edit" %>
+    <%= searchify :action => :edit %>
+
+If your redirect is more complex, you can always redefine the `select_url` option. The `(id)` keyword will be replaced by the id of the selected resource.
+
+    <%= searchify :select_url => "/more/complex/path/(id)/with/custom/action" %>
 
 ### In place autocomplete
 
@@ -51,7 +54,7 @@ Searchify can also be used in a form. For example, let's say that a post belongs
     <%= form_for(@post) do |f| %>
         <div class="field">
             <%= f.label :user %><br />
-            <%= f.autocomplete :user %>
+            <%= f.searchify :user %>
         </div>
     <% end %>
 
@@ -65,21 +68,36 @@ Searchify is by default scopes aware. Let's say you are here:
 
 Assuming your `Post` model responds to the `created_by` method, it will be included in the search.
 
-You may also force your own scopes into an autocomplete field by adding the `scopes` options, as follow:
+You may also force your own scopes into a searchify field by adding the `scopes` options, as follow:
 
-    <%= autocomplete :scopes => {:created_by => 3} %>
+    <%= searchify :scopes => {:created_by => 3} %>
 
 ### Configuration
 
 You can always override the defaults with an initializer. Options are as follow:
 
     Searchify::Config.configure do |config|
+
+        # Extract those keys from the params hash
         config.scope_exclusion  = %w( controller action format collection term page )
+
+        # Default column names on which you want to do your search
         config.column_names     = %w( name title abbreviation )
+
+        # If true, searchify will apply url scopes to your search
         config.scope_awareness  = true
+
+        # Limit the number of results in one search
         config.limit            = 30
-        config.search_key       = 'LIKE'
+
+        # Database search key. Default is 'ILIKE' for Postgres, 'LIKE' for others.
+        config.search_key       = nil
+
+        # Method to be called on each resource
         config.label_method     = :name
+
+        # Default action on which you want to land after a selection. Could be :show, :edit or any custom member action
+        config.default_action   = :show
     end
 
 ### Search stategies

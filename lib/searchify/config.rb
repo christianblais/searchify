@@ -1,7 +1,13 @@
 module Searchify
   module Config
     class << self
-      attr_accessor :scope_exclusion, :columns
+      attr_accessor :scope_exclusion,
+                    :column_names,
+                    :scope_awareness,
+                    :limit,
+                    :search_key,
+                    :label_method,
+                    :default_action
 
       def configure(&block)
         @configuration = block
@@ -20,7 +26,8 @@ module Searchify
           :@scope_awareness => true,
           :@limit           => 30,
           :@search_key      => nil,
-          :@label_method    => :name
+          :@label_method    => :name,
+          :@default_action  => :show
         }
       end
 
