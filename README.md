@@ -23,7 +23,7 @@ Add both jquery-ui and searchify to your `app/assets/javascripts/application.js`
     //= require jquery-ui
     //= require searchify/searchify
 
-Finally, call the `searchify()` method on all `.searchify` field.
+Finally, call the `searchify()` method on all `.searchify` fields.
 
     $('.searchify').searchify();
 
