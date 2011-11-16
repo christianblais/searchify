@@ -10,7 +10,7 @@ module Searchify
 
       # tag options
       options[:class] = [:searchify].push(options[:class]).flatten.compact
-      options[:data]  = {:'select-url' => select_url, :'search-url' => search_url}.merge(options[:data])
+      options[:data]  = {:'select-url' => select_url, :'search-url' => search_url}.merge(options[:data] || {})
 
       text_field_tag(:searchify, nil, options)
     end
@@ -64,7 +64,7 @@ class ActionView::Helpers::FormBuilder
 
     # field options
     options[:class] = [:searchify].push(options[:class]).flatten.compact
-    options[:data]  = {:'search-url' => search_url}.merge(options[:data])
+    options[:data]  = {:'search-url' => search_url}.merge(options[:data] || {})
 
     # value
     label_method = options.delete(:label_method) || Searchify::Config.label_method
