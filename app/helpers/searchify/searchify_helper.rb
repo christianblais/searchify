@@ -68,8 +68,11 @@ class ActionView::Helpers::FormBuilder
 
     # value
     label_method = options.delete(:label_method) || Searchify::Config.label_method
+    
+    # fetch the value only if object respond_to model_name
+    html_value = object.send(model_name).try(label_method) if object.respond_to?(model_name)
 
-    hidden_field(field_name) + @template.text_field_tag(:searchify, object.send(model_name).try(label_method), options)
+    hidden_field(field_name) + @template.text_field_tag(:searchify, html_value, options)
   end
 
   protected
