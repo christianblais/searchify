@@ -66,13 +66,16 @@ class ActionView::Helpers::FormBuilder
     options[:class] = [:searchify].push(options[:class]).flatten.compact
     options[:data]  = {:'search-url' => search_url}.merge(options[:data] || {})
 
+    # default id
+    options[:id] ||= "#{object_name.gsub(/\[/, '_').gsub(/\]/, '')}_#{field_name}"
+
     # value
     label_method = options.delete(:label_method) || Searchify::Config.label_method
     
     # fetch the value only if object respond_to model_name
-    html_value = object.send(model_name).try(label_method) if object.respond_to?(model_name)
+    html_value = object.respond_to?(model_name) ? object.send(model_name).try(label_method) : ""
 
-    hidden_field(field_name) + @template.text_field_tag(:searchify, html_value, options)
+    hidden_field(field_name, :id => "#{options[:id]}_hidden") + @template.text_field_tag(:searchify, html_value, options)
   end
 
   protected
