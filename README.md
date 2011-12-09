@@ -106,8 +106,8 @@ You can always override the defaults with an initializer. Options are as follow:
 
 ### Search stategies
 
-By default, Searchify does a case insensitive search on `name`, `title` and `abbreviation` fields of your models, if they exist. You can of course specify
-a custom search strategy by defining a class method named `search_strategy` in your model. It should returns an array of hash.
+By default, Searchify does a case insensitive search on `name`, `title` and `abbreviation` fields of your models, if they exist.
+To override the default search strategy, just define a class method named `search_strategy` in your model. It should accepts two arguments and returns an array of hash.
 
     class User < ActiveRecord::Base
         def self.search_strategy(term, scopes)
@@ -124,3 +124,9 @@ a custom search strategy by defining a class method named `search_strategy` in y
             end
         end
     end
+
+You may also want to use a per-search search strategy, without affecting the default one. The `search_strategy` option is for you.
+
+    <%= searchify :users, :search_strategy => :my_custom_method %>
+
+Searchify will then try to call your `User.my_custom_method`. It must accepts two arguments, and still return a hash.
