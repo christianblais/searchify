@@ -5,7 +5,7 @@ module Searchify
 
       # searchify options
       collection  = options.delete(:collection) || args.shift || extract_collection
-      search_url  = options.delete(:search_url) || extract_search_url(collection, options.delete(:scopes) || {})
+      search_url  = options.delete(:search_url) || extract_search_url(collection, options.delete(:scopes), options.delete(:search_strategy))
       select_url  = options.delete(:select_url) || extract_select_url(options.delete(:action))
 
       # tag options
@@ -25,9 +25,13 @@ module Searchify
       end
     end
 
-    def extract_search_url(collection, scopes={})
-      url = "#{searchify_path}/search/#{collection}.json?"
-      
+    def extract_search_url(collection, scopes=nil, search_strategy=nil)
+      scopes ||= {}
+
+      url  = "#{searchify_path}/search/#{collection}"
+      url << "/#{search_strategy}" if search_strategy
+      url << ".json?"
+
       scopes = searchify_scopes.merge(scopes) if Searchify::Config.scope_awareness
 
       url << scopes.map{ |k,v| "#{k}=#{v}" }.join('&')
@@ -60,7 +64,7 @@ class ActionView::Helpers::FormBuilder
     model_name  = options.delete(:model_name) || extract_model_name(field)
     field_name  = options.delete(:field_name) || extract_field_name(field)
     collection  = options.delete(:collection) || extract_collection(model_name)
-    search_url  = options.delete(:search_url) || extract_search_url(collection, options.delete(:scopes) || {})
+    search_url  = options.delete(:search_url) || extract_search_url(collection, options.delete(:scopes), options(:search_strategy))
 
     # field options
     options[:class] = [:searchify].push(options[:class]).flatten.compact
@@ -84,8 +88,13 @@ class ActionView::Helpers::FormBuilder
     model_name.to_s.tableize
   end
 
-  def extract_search_url(collection, scopes={})
-    "#{@template.searchify_path}/search/#{collection}.json?" + scopes.map{ |k,v| "#{k}=#{v}" }.join('&')
+  def extract_search_url(collection, scopes=nil, search_strategy=nil)
+    scopes ||= {}
+
+    url  = "#{@template.searchify_path}/search/#{collection}"
+    url << "/#{search_strategy}" if search_strategy
+    url << ".json?"
+    url << scopes.map{ |k,v| "#{k}=#{v}" }.join('&')
   end
 
   def extract_model_name(field)

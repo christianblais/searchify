@@ -11,9 +11,10 @@ module Searchify
       resource_class  = params[:collection].classify.constantize
       search_term     = params[:term]
       search_keyword  = extract_search_key(resource_class)
+      search_strategy = params[:search_strategy] || :search_strategy
 
-      collection = if resource_class.respond_to?(:search_strategy)
-        resource_class.search_strategy(search_term, searchify_scopes)
+      collection = if resource_class.respond_to?(search_strategy)
+        resource_class.send(search_strategy, search_term, searchify_scopes)
       else
         columns = Searchify::Config.column_names & resource_class.column_names
 
