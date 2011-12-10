@@ -25,16 +25,16 @@ module Searchify
       end
     end
 
-    def extract_search_url(collection, scopes=nil, search_strategy=nil)
-      scopes ||= {}
+    def extract_search_url(collection, params=nil, search_strategy=nil)
+      params ||= {}
 
-      url  = "#{searchify_path}/search/#{collection}"
-      url << "/#{search_strategy}" if search_strategy
-      url << ".json?"
+      url = "#{searchify_path}/search/#{collection}.json?"
 
-      scopes = searchify_scopes.merge(scopes) if Searchify::Config.scope_awareness
+      params = searchify_scopes.merge(params) if Searchify::Config.scope_awareness
 
-      url << scopes.map{ |k,v| "#{k}=#{v}" }.join('&')
+      params[:search_strategy] = search_strategy if search_strategy
+
+      url << params.map{ |k,v| "#{k}=#{v}" }.join('&')
     end
 
     def extract_select_url(action)
@@ -88,13 +88,14 @@ class ActionView::Helpers::FormBuilder
     model_name.to_s.tableize
   end
 
-  def extract_search_url(collection, scopes=nil, search_strategy=nil)
-    scopes ||= {}
+  def extract_search_url(collection, params=nil, search_strategy=nil)
+    params ||= {}
 
-    url  = "#{@template.searchify_path}/search/#{collection}"
-    url << "/#{search_strategy}" if search_strategy
-    url << ".json?"
-    url << scopes.map{ |k,v| "#{k}=#{v}" }.join('&')
+
+    url = "#{@template.searchify_path}/search/#{collection}.json?"
+    params[:search_strategy] = search_strategy if search_strategy
+
+    url << params.map{ |k,v| "#{k}=#{v}" }.join('&')
   end
 
   def extract_model_name(field)
