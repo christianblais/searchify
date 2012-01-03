@@ -64,7 +64,7 @@ class ActionView::Helpers::FormBuilder
     model_name  = options.delete(:model_name) || extract_model_name(field)
     field_name  = options.delete(:field_name) || extract_field_name(field)
     collection  = options.delete(:collection) || extract_collection(model_name)
-    search_url  = options.delete(:search_url) || extract_search_url(collection, options.delete(:scopes), options(:search_strategy))
+    search_url  = options.delete(:search_url) || extract_search_url(collection, options.delete(:scopes), options.delete(:search_strategy))
 
     # field options
     options[:class] = [:searchify].push(options[:class]).flatten.compact
@@ -90,8 +90,7 @@ class ActionView::Helpers::FormBuilder
 
   def extract_search_url(collection, params=nil, search_strategy=nil)
     params ||= {}
-
-
+    
     url = "#{@template.searchify_path}/search/#{collection}.json?"
     params[:search_strategy] = search_strategy if search_strategy
 
