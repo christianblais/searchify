@@ -120,7 +120,7 @@ To override the default search strategy, just define a class method named `searc
             end
 
             scoped.map do |user|
-              {:label => user.username, :id => resource.id}
+              {:label => user.username, :id => user.id}
             end
         end
     end
