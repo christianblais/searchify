@@ -34,7 +34,13 @@ module Searchify
 
       params[:search_strategy] = search_strategy if search_strategy
 
-      url << params.map{ |k,v| "#{k}=#{v}" }.join('&')
+      url << params.map do |k,v|
+        if v.kind_of?(Array)
+          v.map{ |e| "#{k}[]=#{e}" }
+        else
+          "#{k}=#{v}"
+        end
+      end.join('&')
     end
 
     def extract_select_url(action)
@@ -94,7 +100,13 @@ class ActionView::Helpers::FormBuilder
     url = "#{@template.searchify_path}/search/#{collection}.json?"
     params[:search_strategy] = search_strategy if search_strategy
 
-    url << params.map{ |k,v| "#{k}=#{v}" }.join('&')
+    url << params.map do |k,v|
+      if v.kind_of?(Array)
+        v.map{ |e| "#{k}[]=#{e}" }
+      else
+        "#{k}=#{v}"
+      end
+    end.join('&')
   end
 
   def extract_model_name(field)
