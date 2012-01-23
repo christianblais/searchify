@@ -7,8 +7,8 @@ require "searchify/version"
 Gem::Specification.new do |s|
   s.name        = "searchify"
   s.version     = Searchify::VERSION
-  s.authors     = ["Christian Blais"]
-  s.email       = ["christ.blais@gmail.com"]
+  s.authors     = ["Christian Blais", "Thierry Joyal"]
+  s.email       = ["christ.blais@gmail.com", "thierry.joyal@gmail.com"]
   s.homepage    = "http://github.com/christianblais/searchify"
   s.summary     = "Search with ease!"
   s.description = "Searchify provides a quick way to search your collections."
