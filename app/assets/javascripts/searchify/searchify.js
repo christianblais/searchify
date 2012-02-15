@@ -19,7 +19,7 @@
             });
 
             $(this).change( function (event, ui) {
-                if ( $(this).data('value') != $(this).prev().val() ) {
+                if ( $(this).prev().val() == '' || $(this).prev().val() != $(this).data('value') ) {
                     $(this).val('');
                     $(this).prev().val('');
                 }
