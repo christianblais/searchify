@@ -56,6 +56,17 @@ module Searchify
         url << "/#{action}"
       end
 
+      if Searchify::Config.scope_awareness && !searchify_scopes.empty?
+        url += '?'
+        url << searchify_scopes.map do |k,v|
+          if v.kind_of?(Array)
+            v.map{ |e| "#{k}[]=#{e}" }
+          else
+            "#{k}=#{v}"
+          end
+        end.join('&')
+      end
+
       url
     end
   end
