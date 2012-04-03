@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Searchify by christianblais</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Searchify</h1>
+        <p>Searchify provides a quick way to search your collections. Type, choose, enjoy!</p>
+        <p class="view"><a href="https://github.com/christianblais/searchify">View the Project on GitHub <small>christianblais/searchify</small></a></p>
+        <ul>
+          <li><a href="https://github.com/christianblais/searchify/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/christianblais/searchify/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/christianblais/searchify">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>Requirements</h2>
+
+<ul>
+<li>Rails 3.1</li>
+<li>jQuery</li>
+<li>jQuery UI (for the autocomplete widget)</li>
+</ul><h2>Installation</h2>
+
+<p>First, install the gem</p>
+
+<pre><code>gem install searchify
+</code></pre>
+
+<p>Mount the engine to the desired route in <code>config/routes.rb</code></p>
+
+<pre><code>mount Searchify::Engine =&gt; "/searchify", :as =&gt; "searchify"
+</code></pre>
+
+<p>Add both jquery-ui and searchify to your <code>app/assets/javascripts/application.js</code> file</p>
+
+<pre><code>//= require jquery-ui
+//= require searchify/searchify
+</code></pre>
+
+<p>Finally, call the <code>searchify()</code> method on all <code>.searchify</code> fields.</p>
+
+<pre><code>$('.searchify').searchify();
+</code></pre>
+
+<h2>Usage</h2>
+
+<h3>Autocomplete search</h3>
+
+<p>Searchify is intended to be used on a per model basis. You type, you choose, you are redirected to the chosen resource show page.
+Calling it on an index page, it infers the model to be searched with the controller name, or the <code>resource_class</code> helper, if it exists.
+For example, consider the following line of code on your <code>/posts</code> page:</p>
+
+<pre><code>&lt;%= searchify %&gt;
+</code></pre>
+
+<p>This will triggers an AJAX call to <code>/searchify/search/posts.json</code> page and jQuery will handle the response with its autocomplete widget.</p>
+
+<p>If you want to specify the collection, i.e. searching for <code>users</code> on the <code>posts</code> page, just write this:</p>
+
+<pre><code>&lt;%= searchify :users %&gt;
+</code></pre>
+
+<p>When a selection is made, you are redirected to the chosen resource show page. If you want to land on any other member action, the <code>action</code> option is for you.</p>
+
+<pre><code>&lt;%= searchify :action =&gt; :edit %&gt;
+</code></pre>
+
+<p>If your redirect is more complex, you can always redefine the <code>select_url</code> option. The <code>(id)</code> keyword will be replaced by the id of the selected resource.</p>
+
+<pre><code>&lt;%= searchify :select_url =&gt; "/more/complex/path/(id)/with/custom/action" %&gt;
+</code></pre>
+
+<h3>In place autocomplete</h3>
+
+<p>Searchify can also be used in a form. For example, let's say that a post belongs to a user of your choice:</p>
+
+<pre><code>&lt;%= form_for(@post) do |f| %&gt;
+    &lt;div class="field"&gt;
+        &lt;%= f.label :user %&gt;&lt;br /&gt;
+        &lt;%= f.searchify :user %&gt;
+    &lt;/div&gt;
+&lt;% end %&gt;
+</code></pre>
+
+<p>Searchify will include a <code>user_id</code> field in your form, which will be automatically populated with your search. Searchify uses the <code>label_method</code> option to display the object.</p>
+
+<h3>Scopes</h3>
+
+<p>Searchify is by default scopes aware. Let's say you are here:</p>
+
+<p><code>/posts?created_by=3</code></p>
+
+<p>Assuming your <code>Post</code> model responds to the <code>created_by</code> method, it will be included in the search.</p>
+
+<p>You may also force your own scopes into a searchify field by adding the <code>scopes</code> options, as follow:</p>
+
+<pre><code>&lt;%= searchify :scopes =&gt; {:created_by =&gt; 3} %&gt;
+</code></pre>
+
+<h3>Configuration</h3>
+
+<p>You can always override the defaults with an initializer. Options are as follow:</p>
+
+<pre><code>Searchify::Config.configure do |config|
+
+    # Extract those keys from the params hash
+    config.scope_exclusion  = %w( controller action format collection term page )
+
+    # Default column names on which you want to do your search
+    config.column_names     = %w( name title abbreviation )
+
+    # If true, searchify will apply url scopes to your search
+    config.scope_awareness  = true
+
+    # Limit the number of results in one search
+    config.limit            = 30
+
+    # Database search key. Default is 'ILIKE' for Postgres, 'LIKE' for others.
+    config.search_key       = nil
+
+    # Method to be called on each resource
+    config.label_method     = :name
+
+    # Default action on which you want to land after a selection. Could be :show, :edit or any custom member action
+    config.default_action   = :show
+end
+</code></pre>
+
+<h3>Search stategies</h3>
+
+<p>By default, Searchify does a case insensitive search on <code>name</code>, <code>title</code> and <code>abbreviation</code> fields of your models, if they exist.
+To override the default search strategy, just define a class method named <code>search_strategy</code> in your model. It should accepts two arguments and returns an array of hashes.</p>
+
+<pre><code>class User &lt; ActiveRecord::Base
+    def self.search_strategy(term, scopes)
+        columns = %w( username, first_name, last_name )
+
+        scoped = where( columns.map{ |c| "(#{c} ILIKE :term)" }.join(' OR '), :term =&gt; "%#{term}%")
+
+        scopes.each do |key, value|
+          scoped = scoped.send(key, value) if respond_to?(key)
+        end
+
+        scoped.map do |user|
+          {:label =&gt; user.username, :id =&gt; user.id}
+        end
+    end
+end
+</code></pre>
+
+<p>You may also want to use a per-search search strategy, without affecting the default one. The <code>search_strategy</code> option is for you.</p>
+
+<pre><code>&lt;%= searchify :users, :search_strategy =&gt; :my_custom_method %&gt;
+</code></pre>
+
+<p>Searchify will then try to call your <code>User.my_custom_method</code>. It must accepts two arguments, and still return an array of hashes.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/christianblais">christianblais</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
